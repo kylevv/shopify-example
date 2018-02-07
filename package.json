@@ -1,0 +1,34 @@
+{
+  "name": "shopify-example",
+  "version": "1.0.0",
+  "description": "Testing Shopify",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kylevv/shopify-example.git"
+  },
+  "keywords": [
+    "shopify"
+  ],
+  "author": "kylevv",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kylevv/shopify-example/issues"
+  },
+  "homepage": "https://github.com/kylevv/shopify-example#readme",
+  "devDependencies": {
+    "react-scripts": "^1.1.0"
+  },
+  "dependencies": {
+    "@shopify/buy-button-js": "^0.5.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "shopify-buy": "^1.0.2"
+  }
+}
