@@ -1,10 +1,11 @@
 {
   "name": "shopify-example",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Testing Shopify",
   "main": "src/index.js",
   "scripts": {
     "start": "react-scripts start",
+    "start:server": "node index.js",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
@@ -21,12 +22,15 @@
   "bugs": {
     "url": "https://github.com/kylevv/shopify-example/issues"
   },
-  "homepage": "https://github.com/kylevv/shopify-example#readme",
   "devDependencies": {
     "react-scripts": "^1.1.0"
   },
   "dependencies": {
     "@shopify/buy-button-js": "^0.5.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "mongoose": "^5.0.3",
+    "morgan": "^1.9.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "shopify-buy": "^1.0.2"
