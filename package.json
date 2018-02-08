@@ -6,6 +6,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start:server": "node index.js",
+    "watch": "nodemon index.js",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
@@ -23,16 +24,22 @@
     "url": "https://github.com/kylevv/shopify-example/issues"
   },
   "devDependencies": {
+    "nodemon": "^1.14.12",
     "react-scripts": "^1.1.0"
   },
   "dependencies": {
     "@shopify/buy-button-js": "^0.5.1",
     "body-parser": "^1.18.2",
+    "cookie": "^0.3.1",
+    "dotenv": "^5.0.0",
     "express": "^4.16.2",
     "mongoose": "^5.0.3",
     "morgan": "^1.9.0",
+    "nonce": "^1.0.4",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5",
     "shopify-buy": "^1.0.2"
   }
 }
