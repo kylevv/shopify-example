@@ -14,6 +14,7 @@ const apiKey = process.env.SHOPIFY_API_KEY
 const apiSecret = process.env.SHOPIFY_API_SECRET
 const forwardingAddress = process.env.SERVER_URL
 const scopes = 'read_products'
+const shops = []
 
 const app = express()
 
@@ -66,15 +67,17 @@ app.get('/shopify/callback', (req, res) => {
     request.post(accessTokenRequestUrl, {json: accessTokenPayload})
       .then((accessTokenResponse) => {
         const accessToken = accessTokenResponse.access_token
-        const shopRequestUrl = `https://${shop}/admin/shop.json`
-        const shopRequestHeaders = {'X-Shopify-Access-Token': accessToken}
-        request.get(shopRequestUrl, {headers: shopRequestHeaders})
-          .then((shopResponse) => {
-            res.end(shopResponse)
-          })
-          .catch((error) => {
-            res.status(error.statusCode).send(error.error.error_description)
-          })
+        shops.push({shop, accessToken}) // TODO: Save to database
+        // const shopRequestUrl = `https://${shop}/admin/shop.json`
+        // const shopRequestHeaders = {'X-Shopify-Access-Token': accessToken}
+        // request.get(shopRequestUrl, {headers: shopRequestHeaders})
+        //   .then((shopResponse) => {
+        //     res.end(shopResponse)
+        //   })
+        //   .catch((error) => {
+        //     res.status(error.statusCode).send(error.error.error_description)
+        //   })
+        res.redirect(forwardingAddress)
       })
       .catch((error) => {
         res.status(error.statusCode).send(error.error.error_description)
@@ -82,6 +85,18 @@ app.get('/shopify/callback', (req, res) => {
   } else {
     res.status(400).send('Required parameters missing')
   }
+})
+app.get('/products', (req, res) => {
+  const {shop, accessToken} = shops[0]
+  const shopRequestUrl = `https://${shop}/admin/products.json`
+  const shopRequestHeaders = {'X-Shopify-Access-Token': accessToken}
+  request.get(shopRequestUrl, {headers: shopRequestHeaders})
+    .then((shopResponse) => {
+      res.json(shopResponse)
+    })
+    .catch((error) => {
+      res.status(error.statusCode).send(error.error.error_description)
+    })
 })
 
 // Database

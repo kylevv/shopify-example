@@ -1,6 +1,6 @@
 {
   "name": "shopify-example",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Testing Shopify",
   "main": "src/index.js",
   "scripts": {

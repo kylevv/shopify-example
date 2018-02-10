@@ -13,9 +13,29 @@ class App extends Component {
   }
 
   componentDidMount () {
+    window.fetch('/products')
+      .then((response) => response.json())
+      .then((json) => JSON.parse(json))
+      .then((results) => {
+        console.log(results)
+        this.setState({products: results.products})
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+
+  componentDidUpdate () {
+    const nodes = document.querySelector('.tickets').childNodes
+    this.state.products.forEach((product, i) => {
+      this.createButton(product.id, nodes[i])
+    })
+  }
+
+  createButton (id, node) {
     this.props.ui.createComponent('product', {
-      id: 1175579689002,
-      node: document.querySelector('.ticket1'),
+      id,
+      node,
       moneyFormat: '%24%7B%7Bamount%7D%7D',
       options: {
         'product': {
@@ -91,7 +111,9 @@ class App extends Component {
     return (
       <div>
         <div>Hello World!</div>
-        <div className='ticket1' />
+        <div className='tickets'>
+          {this.state.products.map((product) => <div />)}
+        </div>
       </div>
     )
   }
