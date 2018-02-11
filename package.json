@@ -4,6 +4,8 @@
   "description": "Testing Shopify",
   "main": "src/index.js",
   "scripts": {
+    "build-css": "node-sass-chokidar src/ -o src/",
+    "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
     "start": "react-scripts start",
     "start:server": "node index.js",
     "watch": "nodemon index.js",
@@ -35,6 +37,7 @@
     "express": "^4.16.2",
     "mongoose": "^5.0.3",
     "morgan": "^1.9.0",
+    "node-sass-chokidar": "0.0.3",
     "nonce": "^1.0.4",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",

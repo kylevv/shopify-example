@@ -14,7 +14,8 @@ const apiKey = process.env.SHOPIFY_API_KEY
 const apiSecret = process.env.SHOPIFY_API_SECRET
 const forwardingAddress = process.env.SERVER_URL
 const scopes = 'read_products'
-const shops = []
+// const shops = []
+const shops = [{shop: process.env.DEV_SHOP, accessToken: process.env.DEV_TOKEN}] // FOR DEV ONLY
 
 const app = express()
 
@@ -87,11 +88,16 @@ app.get('/shopify/callback', (req, res) => {
   }
 })
 app.get('/products', (req, res) => {
+  if (!shops.length) return res.status(500).send('No products to list')
   const {shop, accessToken} = shops[0]
   const shopRequestUrl = `https://${shop}/admin/products.json`
   const shopRequestHeaders = {'X-Shopify-Access-Token': accessToken}
   request.get(shopRequestUrl, {headers: shopRequestHeaders})
     .then((shopResponse) => {
+      shopResponse = JSON.parse(shopResponse)
+      shopResponse.products.forEach((product) => {
+        product.shop = shop
+      })
       res.json(shopResponse)
     })
     .catch((error) => {
