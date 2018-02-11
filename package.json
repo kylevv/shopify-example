@@ -1,17 +1,20 @@
 {
   "name": "shopify-example",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Testing Shopify",
   "main": "src/index.js",
   "scripts": {
-    "build-css": "node-sass-chokidar src/ -o src/",
-    "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
-    "start": "react-scripts start",
     "start:server": "node index.js",
-    "watch": "nodemon index.js",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "watch:server": "nodemon index.js",
+    "build:css": "node-sass-chokidar src/ -o src/",
+    "watch:css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
+    "start:app": "react-scripts start",
+    "build:app": "react-scripts build",
+    "test:app": "react-scripts test --env=jsdom",
+    "eject:app": "react-scripts eject",
+    "build": "gulp build",
+    "watch": "gulp watch",
+    "lint": "standard"
   },
   "repository": {
     "type": "git",
@@ -26,6 +29,10 @@
     "url": "https://github.com/kylevv/shopify-example/issues"
   },
   "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-nodemon": "^2.2.1",
+    "gulp-run": "^1.7.1",
+    "gulp-watch": "^5.0.0",
     "nodemon": "^1.14.12",
     "react-scripts": "^1.1.0"
   },
