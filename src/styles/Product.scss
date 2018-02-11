@@ -1,0 +1,28 @@
+.Product {
+  position: relative;
+  height: 250px;
+  width: 250px;
+  background-size: contain;
+
+  .product-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    h3 {
+      margin: 5px;
+      text-align: center;
+      text-shadow: -1px -1px 0 #FFF, 1px -1px 0 #FFF, -1px 1px 0 #FFF, 1px 1px 0 #FFF;
+    }
+
+    .product-button {
+      color: white;
+      background-color: rgb(255, 25, 25);
+      width: 100px;
+      margin: auto;
+      display: block;
+    }
+  }
+}
+

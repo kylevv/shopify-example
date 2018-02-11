@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Product from './components/Product'
+import './styles/App.css'
 
 class App extends Component {
   constructor (props) {

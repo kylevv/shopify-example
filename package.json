@@ -1,13 +1,13 @@
 {
   "name": "shopify-example",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Testing Shopify",
   "main": "src/index.js",
   "scripts": {
     "start:server": "node index.js",
     "watch:server": "nodemon index.js",
     "build:css": "node-sass-chokidar src/ -o src/",
-    "watch:css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
+    "watch:css": "npm run build-css && node-sass-chokidar src/styles -o src/styles --watch --recursive",
     "start:app": "react-scripts start",
     "build:app": "react-scripts build",
     "test:app": "react-scripts test --env=jsdom",

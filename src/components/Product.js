@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import '../styles/Product.css'
 
 class Product extends Component {
   openCheckout () {
@@ -9,10 +10,11 @@ class Product extends Component {
     const {product} = this.props
     console.log(product)
     return (
-      <div>
-        <h3>{product.title}</h3>
-        <img src={product.image.src} />
-        <button onClick={this.openCheckout.bind(this)}>Buy Me Now</button>
+      <div className={'Product'} style={{'background-image': `url("${product.image.src}"`}}>
+        <div className={'product-container'} >
+          <h3>{product.title}</h3>
+          <button className={'product-button'} onClick={this.openCheckout.bind(this)}>Buy Me Now</button>
+        </div>
       </div>
     )
   }
