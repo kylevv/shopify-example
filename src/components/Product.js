@@ -3,7 +3,7 @@ import '../styles/Product.css'
 
 class Product extends Component {
   openCheckout () {
-    window.open(`https://${this.props.product.shop}/cart/${this.props.product.variants[0].id}:1`)
+    window.open(`https://${this.props.product.shop}/cart/${this.props.product.variants[0].id}:1?note=helloworld&attributes[seatnumber]=3`)
   }
 
   render () {
