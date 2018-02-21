@@ -1,0 +1,25 @@
+.Nav {
+  background-color: blue;
+  height: 100px;
+  position: relative;
+  margin-bottom: 25px;
+
+  .nav-container {
+    position: relative;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+
+    .nav-button {
+      display: inline-block;
+      cursor: pointer;
+      color: white;
+      border: 5px solid white;
+      font-size: 25px;
+      border-radius: 10px;
+      margin-left: 20px;
+      margin-right: 20px;
+      padding: 10px;
+    }
+  }
+}

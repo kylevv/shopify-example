@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import Product from './components/Product'
+import Nav from './components/Nav'
+import Form from './components/Form'
 import './styles/App.css'
 
 class App extends Component {
   constructor (props) {
     super(props)
-
     this.state = {
+      view: 'create',
       products: []
     }
   }
@@ -26,11 +28,24 @@ class App extends Component {
       })
   }
 
+  changeView (view) {
+    this.setState({view})
+  }
+
+  addProduct (product) {
+    const products = this.state.products
+    products.unshift(product)
+    this.setState({products})
+  }
+
   render () {
     return (
       <div>
-        <div>Hello World!</div>
-        {this.state.products.map((product) => <Product product={product} />)}
+        <Nav changeView={this.changeView.bind(this)} />
+        {this.state.view === 'create'
+          ? <div><div>Hello World!</div><Form addProduct={this.addProduct.bind(this)} /></div>
+          : this.state.products.map((product) => <Product product={product} />)
+        }
       </div>
     )
   }
