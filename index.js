@@ -71,7 +71,8 @@ app.use((req, res, next) => {
   else next()
 })
 app.use(bodyParser.json())
-app.use(express.static(path.join(__dirname, 'build')))
+app.use('/', express.static(path.join(__dirname, 'build')))
+app.use('/auth', express.static(path.join(__dirname, 'auth')))
 const hmacValidate = (req, res, next) => {
   console.log('header:', req.headers['x-shopify-hmac-sha256'])
   let {hmac} = req.query
@@ -116,6 +117,10 @@ const webhookValidate = (req, res, next) => {
 app.get('/helloworld', (req, res) => {
   res.json({hello: 'world'})
 })
+
+// app.get('/auth', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'auth.html'))
+// })
 
 app.get('/shopify', (req, res) => {
   const shop = req.query.shop

@@ -4,8 +4,9 @@
   "description": "Testing Shopify",
   "main": "src/index.js",
   "scripts": {
-    "start:server": "node index.js",
-    "watch:server": "nodemon index.js",
+    "postinstall": "cd semantic && gulp build",
+    "start:server": "gulp copy && node index.js",
+    "watch:server": "gulp copy && nodemon index.js",
     "build:css": "node-sass-chokidar src/ -o src/",
     "watch:css": "npm run build-css && node-sass-chokidar src/styles -o src/styles --watch --recursive",
     "start:app": "react-scripts start",
@@ -42,6 +43,7 @@
     "cookie": "^0.3.1",
     "dotenv": "^5.0.0",
     "express": "^4.16.2",
+    "jquery": "^3.3.1",
     "mongoose": "^5.0.3",
     "morgan": "^1.9.0",
     "node-sass-chokidar": "0.0.3",
@@ -51,6 +53,7 @@
     "react-dom": "^16.2.0",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
+    "semantic-ui": "^2.3.0",
     "shopify-buy": "^1.0.2"
   }
 }
