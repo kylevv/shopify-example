@@ -9,7 +9,12 @@ const cookie = require('cookie')
 const nonce = require('nonce')()
 const request = require('request-promise-native')
 const querystring = require('querystring')
+const session = require('express-session')
+const cookieParser = require('cookie-parser')
+// const flash = require('express-flash-messages')
+const flash = require('express-flash')
 // const getRawBody = require('raw-body')
+const {handleSignup, handleLogin, validateSession} = require('./backend/auth-routes')
 
 const apiKey = process.env.SHOPIFY_API_KEY
 const apiSecret = process.env.SHOPIFY_API_SECRET
@@ -64,15 +69,29 @@ const deleteWebhooks = ({shop, accessToken}) => {
 }
 
 // Middleware
+app.set('trust proxy', 1)
+app.set('vew engine', 'pug')
+app.set('views', './auth/views')
 app.use(morgan('dev'))
+app.use(cookieParser(process.env.SECRET))
+app.use(session({
+  secret: process.env.SECRET,
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    secure: true,
+    maxAge: 1000 * 60 * 60 * 24 // 1 day
+  }
+}))
+app.use(flash())
 app.use(bodyParser.urlencoded({extended: true}))
 app.use((req, res, next) => {
   if (req.headers['x-shopify-topic']) bodyParser.text({type: '*/*'})(req, res, next)
   else next()
 })
 app.use(bodyParser.json())
-app.use('/', express.static(path.join(__dirname, 'build')))
-app.use('/auth', express.static(path.join(__dirname, 'auth')))
+// app.use('/auth', express.static(path.join(__dirname, 'auth')))
 const hmacValidate = (req, res, next) => {
   console.log('header:', req.headers['x-shopify-hmac-sha256'])
   let {hmac} = req.query
@@ -118,9 +137,23 @@ app.get('/helloworld', (req, res) => {
   res.json({hello: 'world'})
 })
 
-// app.get('/auth', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'auth.html'))
-// })
+app.get('/auth', (req, res) => {
+  res.render('index.pug')
+})
+
+app.get('/auth/:file', (req, res) => {
+  console.log('params:', req.params)
+  const files = [
+    'semantic.min.css',
+    'jquery.min.js',
+    'semantic.min.js'
+  ]
+  if (files.includes(req.params.file)) {
+    res.sendFile(path.join(__dirname, `./auth/${req.params.file}`))
+  } else {
+    res.status(404).end()
+  }
+})
 
 app.get('/shopify', (req, res) => {
   const shop = req.query.shop
@@ -238,6 +271,11 @@ app.get('/products', (req, res) => {
       res.status(error.statusCode).send(error.error.error_description)
     })
 })
+
+app.post('/signup', handleSignup)
+app.post('/login', handleLogin)
+
+app.use('/', validateSession, express.static(path.join(__dirname, 'build')))
 
 // Database
 // const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost/shopify-example'

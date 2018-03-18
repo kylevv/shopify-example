@@ -1,0 +1,68 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    link(href='/auth/semantic.min.css' rel='stylesheet', type='text/css')
+    script(src='/auth/jquery.min.js')
+    script(src='/auth/semantic.min.js')
+    title Shopify Example
+  body
+    if messages.error
+      div.ui.negative.message
+        div.header= messages.error[0]
+    div.ui.buttons.segment
+      button.ui.positive.button.login Login
+      div.or
+      button.ui.button.signup Signup
+    form.ui.form.segment(action='/login' method='post')
+      div.field
+        input(placeholder='username' name='username' type='text')
+      div.field
+        input(placeholder='password' name='password' type='text')
+      div.ui.primary.submit.button Submit
+      div.ui.error.message
+    script(type='text/javascript').
+      var $signupBtn = window.$('.signup')
+      var $loginBtn = window.$('.login')
+      var $form = window.$('.ui.form')
+      var $body = window.$('body')
+      $form.form({
+        fields: {
+          username: {
+            identifier: 'username',
+            rules: [{
+              type: 'empty',
+              prompt: 'Please enter a username'
+            },
+            {
+              type: 'regExp[^[a-zA-Z0-9]{4,16}$]',
+              prompt: 'Username must be between 4 and 16 alphanumeric characters'
+            }]
+          },
+          password: {
+            identifier: 'password',
+            rules: [{
+              type: 'empty',
+              prompt: 'Please enter a password'
+            },
+            {
+              type: 'regExp[^[a-zA-Z0-9]{4,16}$]',
+              prompt: 'Password must be between 4 and 16 alphanumeric characters'
+            }]
+          }
+        }
+      })
+      $signupBtn.on('click', function () {
+        $signupBtn.addClass('positive')
+        $loginBtn.removeClass('positive')
+        $form.attr('action', '/signup')
+      })
+      $loginBtn.on('click', function () {
+        $loginBtn.addClass('positive')
+        $signupBtn.removeClass('positive')
+        $form.attr('action', '/login')
+      })
+      //- var messages = window.getMessages()
+      //- console.log(messages)
+      console.log('loaded')

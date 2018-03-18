@@ -7,6 +7,8 @@ class Product extends Component {
     this.state = {
       shop: ''
     }
+    this.updateShop = this.updateShop.bind(this)
+    this.buildProduct = this.buildProduct.bind(this)
   }
 
   updateShop (ev) {
@@ -26,15 +28,17 @@ class Product extends Component {
   render () {
     return (
       <div className={'Form'}>
-        <form onSubmit={this.updateShop.bind(this)}>
-          <input placeholder={'store-name.myshopify.com'} />
-        </form>
-        {this.state.shop &&
-          <div>
+        {this.state.shop
+          ? <div>
             <select>
               <option value={'orange'}>Orange</option>
             </select>
-            <button onClick={this.buildProduct.bind(this)}>Submit</button>
+            <button onClick={this.buildProduct}>Submit</button>
+          </div>
+          : <div>
+            <form onSubmit={this.updateShop}>
+              <input placeholder={'store-name.myshopify.com'} />
+            </form>
           </div>
         }
       </div>

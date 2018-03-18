@@ -11,6 +11,8 @@ class App extends Component {
       view: 'create',
       products: []
     }
+    this.changeView = this.changeView.bind(this)
+    this.addProduct = this.addProduct.bind(this)
   }
 
   componentDidMount () {
@@ -35,15 +37,15 @@ class App extends Component {
   addProduct (product) {
     const products = this.state.products
     products.unshift(product)
-    this.setState({products})
+    this.setState({products, view: 'create'})
   }
 
   render () {
     return (
       <div>
-        <Nav changeView={this.changeView.bind(this)} />
+        <Nav changeView={this.changeView} />
         {this.state.view === 'create'
-          ? <div><div>Hello World!</div><Form addProduct={this.addProduct.bind(this)} /></div>
+          ? <div><div>Hello World!</div><Form addProduct={this.addProduct} /></div>
           : this.state.products.map((product) => <Product product={product} />)
         }
       </div>
