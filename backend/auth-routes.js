@@ -1,26 +1,38 @@
+const User = require('./schemas/user-model.js')
 
-const USER = true // remove after db is in
-
-const handleSignup = (req, res) => {
-  console.log('signup:', req.body)
-  if (!USER) { // if user already exists
-    req.flash('error', 'Username Taken')
-    res.redirect('/auth')
-  } else {
-    req.session.user = 'temp'
+const handleSignup = async (req, res) => {
+  const {username, password} = req.body
+  // TODO: validate username and password format
+  try {
+    const user = await User.findOne({username}).exec()
+    if (user) await Promise.reject(new Error('Username Taken'))
+    await User.create({username, password})
+    req.session.user = username
     res.redirect('/')
+  } catch (err) {
+    if (err.message) req.flash('error', err.message)
+    res.redirect('/auth')
   }
 }
 
-const handleLogin = (req, res) => {
-  console.log('login:', req.body)
-  if (!USER) { // if no user found or wrong passsword
-    req.flash('error', 'Invalid Credentials')
-    res.redirect('/auth')
-  } else {
-    req.session.user = 'temp'
+const handleLogin = async (req, res) => {
+  const {username, password} = req.body
+  try {
+    const user = await User.findOne({username}).exec()
+    if (!user) await Promise.reject(new Error('Invalid Username'))
+    const match = await user.comparePasswords(password)
+    if (!match) await Promise.reject(new Error('Invalid Password'))
+    req.session.user = username
     res.redirect('/')
+  } catch (err) {
+    if (err.message) req.flash('error', err.message)
+    res.redirect('/auth')
   }
+}
+
+const handleLogout = (req, res) => {
+  req.session.destroy()
+  res.redirect('/auth')
 }
 
 const validateSession = (req, res, next) => {
@@ -28,4 +40,4 @@ const validateSession = (req, res, next) => {
   else next()
 }
 
-module.exports = {handleSignup, handleLogin, validateSession}
+module.exports = {handleSignup, handleLogin, handleLogout, validateSession}

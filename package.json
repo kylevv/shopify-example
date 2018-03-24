@@ -1,6 +1,6 @@
 {
   "name": "shopify-example",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Testing Shopify",
   "main": "src/index.js",
   "scripts": {
@@ -39,6 +39,8 @@
   },
   "dependencies": {
     "@shopify/buy-button-js": "^0.5.1",
+    "bcrypt-nodejs": "^0.0.3",
+    "bcrypt-nodejs-as-promised": "^1.0.4",
     "body-parser": "^1.18.2",
     "cookie": "^0.3.1",
     "cookie-parser": "^1.4.3",

@@ -33,5 +33,5 @@ gulp.task('copy', function () {
     'semantic/dist/semantic.min.css',
     'semantic/dist/semantic.min.js',
     'node_modules/jquery/dist/jquery.min.js'
-  ]).pipe(gulp.dest('./auth/'))
+  ]).pipe(gulp.dest('./auth/vendors/'))
 })

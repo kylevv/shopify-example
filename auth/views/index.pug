@@ -3,9 +3,9 @@ html(lang='en')
   head
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width, initial-scale=1')
-    link(href='/auth/semantic.min.css' rel='stylesheet', type='text/css')
-    script(src='/auth/jquery.min.js')
-    script(src='/auth/semantic.min.js')
+    link(href='/vendors/semantic.min.css' rel='stylesheet', type='text/css')
+    script(src='/vendors/jquery.min.js')
+    script(src='/vendors/semantic.min.js')
     title Shopify Example
   body
     if messages.error
@@ -63,6 +63,3 @@ html(lang='en')
         $signupBtn.removeClass('positive')
         $form.attr('action', '/login')
       })
-      //- var messages = window.getMessages()
-      //- console.log(messages)
-      console.log('loaded')

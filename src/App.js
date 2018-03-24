@@ -34,6 +34,10 @@ class App extends Component {
     this.setState({view})
   }
 
+  logout () {
+    window.open('/logout', '_self')
+  }
+
   addProduct (product) {
     const products = this.state.products
     products.unshift(product)
@@ -43,7 +47,7 @@ class App extends Component {
   render () {
     return (
       <div>
-        <Nav changeView={this.changeView} />
+        <Nav changeView={this.changeView} logout={this.logout} />
         {this.state.view === 'create'
           ? <div><div>Hello World!</div><Form addProduct={this.addProduct} /></div>
           : this.state.products.map((product) => <Product product={product} />)

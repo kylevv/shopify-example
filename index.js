@@ -2,7 +2,8 @@ const express = require('express')
 const path = require('path')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
-// const mongoose = require('mongoose')
+const mongoose = require('mongoose')
+mongoose.Promise = global.Promise
 const dotenv = require('dotenv').config() // eslint-disable-line
 const crypto = require('crypto')
 const cookie = require('cookie')
@@ -14,7 +15,7 @@ const cookieParser = require('cookie-parser')
 // const flash = require('express-flash-messages')
 const flash = require('express-flash')
 // const getRawBody = require('raw-body')
-const {handleSignup, handleLogin, validateSession} = require('./backend/auth-routes')
+const {handleSignup, handleLogin, handleLogout, validateSession} = require('./backend/auth-routes')
 
 const apiKey = process.env.SHOPIFY_API_KEY
 const apiSecret = process.env.SHOPIFY_API_SECRET
@@ -91,6 +92,7 @@ app.use((req, res, next) => {
   else next()
 })
 app.use(bodyParser.json())
+app.use('/vendors', express.static(path.join(__dirname, 'auth/vendors')))
 // app.use('/auth', express.static(path.join(__dirname, 'auth')))
 const hmacValidate = (req, res, next) => {
   console.log('header:', req.headers['x-shopify-hmac-sha256'])
@@ -141,19 +143,19 @@ app.get('/auth', (req, res) => {
   res.render('index.pug')
 })
 
-app.get('/auth/:file', (req, res) => {
-  console.log('params:', req.params)
-  const files = [
-    'semantic.min.css',
-    'jquery.min.js',
-    'semantic.min.js'
-  ]
-  if (files.includes(req.params.file)) {
-    res.sendFile(path.join(__dirname, `./auth/${req.params.file}`))
-  } else {
-    res.status(404).end()
-  }
-})
+// app.get('/auth/:file', (req, res) => {
+//   console.log('params:', req.params)
+//   const files = [
+//     'semantic.min.css',
+//     'jquery.min.js',
+//     'semantic.min.js'
+//   ]
+//   if (files.includes(req.params.file)) {
+//     res.sendFile(path.join(__dirname, `./auth/${req.params.file}`))
+//   } else {
+//     res.status(404).end()
+//   }
+// })
 
 app.get('/shopify', (req, res) => {
   const shop = req.query.shop
@@ -274,12 +276,13 @@ app.get('/products', (req, res) => {
 
 app.post('/signup', handleSignup)
 app.post('/login', handleLogin)
+app.get('/logout', handleLogout)
 
 app.use('/', validateSession, express.static(path.join(__dirname, 'build')))
 
 // Database
-// const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost/shopify-example'
-// mongoose.connect(mongoURI)
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost/shopify-example'
+mongoose.connect(mongoURI)
 
 // Port
 const port = process.env.PORT || 1337

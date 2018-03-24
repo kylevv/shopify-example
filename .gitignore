@@ -64,3 +64,4 @@ dist/
 *.bak
 src/**/*.css
 semantic*
+auth/vendors
