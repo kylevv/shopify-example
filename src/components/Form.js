@@ -4,18 +4,15 @@ import '../styles/Form.css'
 class Product extends Component {
   constructor (props) {
     super(props)
-    this.state = {
-      shop: ''
-    }
     this.updateShop = this.updateShop.bind(this)
     this.buildProduct = this.buildProduct.bind(this)
   }
 
   updateShop (ev) {
+    console.log('send')
     ev.preventDefault()
-    const shop = document.querySelector('.Form form input').value()
-    window.fetch(`/shopify?shop=${shop}`)
-    this.setState({shop})
+    const shop = document.querySelector('.Form form input').value
+    window.open(`/shopify?shop=${shop}`, '_self')
   }
 
   buildProduct () {
@@ -28,7 +25,7 @@ class Product extends Component {
   render () {
     return (
       <div className={'Form'}>
-        {this.state.shop
+        {this.props.shop
           ? <div>
             <select>
               <option value={'orange'}>Orange</option>

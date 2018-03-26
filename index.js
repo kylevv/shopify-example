@@ -16,6 +16,8 @@ const cookieParser = require('cookie-parser')
 const flash = require('express-flash')
 // const getRawBody = require('raw-body')
 const {handleSignup, handleLogin, handleLogout, validateSession} = require('./backend/auth-routes')
+const User = require('./backend/schemas/user-model.js')
+const Shop = require('./backend/schemas/shop-model.js')
 
 const apiKey = process.env.SHOPIFY_API_KEY
 const apiSecret = process.env.SHOPIFY_API_SECRET
@@ -31,9 +33,9 @@ const app = express()
 // Webhooks
 const requiredWebhooks = ['orders/create', 'orders/cancelled']
 const setWebhooks = ({shop, accessToken, webhooks}) => {
-  console.log(shop, webhooks)
+  console.log('Setting up webhooks for:', shop, webhooks)
   return Promise.all(requiredWebhooks
-    .filter((topic) => !webhooks.includes(topic))
+    // .filter((topic) => !webhooks.includes(topic))
     .map((topic) => {
       console.log(`Promise of ${topic}`)
       const webhookRequestUrl = `https://${shop}/admin/webhooks.json`
@@ -47,7 +49,7 @@ const setWebhooks = ({shop, accessToken, webhooks}) => {
       }
       return request.post(webhookRequestUrl, {headers: webhookRequestHeaders, json: webhookPayload})
         .then((webhookConfirmation) => {
-          webhooks.push(topic)
+          // webhooks.push(topic)
           console.log(webhookConfirmation)
         })
     })
@@ -158,6 +160,8 @@ app.get('/auth', (req, res) => {
 // })
 
 app.get('/shopify', (req, res) => {
+  console.log('1:', req.session)
+  if (!req.session || !req.session.user) return res.status(400).end()
   const shop = req.query.shop
   if (shop) {
     const state = nonce()
@@ -171,17 +175,19 @@ app.get('/shopify', (req, res) => {
 })
 
 app.get('/shopify/callback', hmacValidate, (req, res) => {
+  console.log('2:', req.session)
+  if (!req.session || !req.session.user) return res.status(400).end()
   const {shop, code, state} = req.query
   const stateCookie = cookie.parse(req.headers.cookie).state
   if (state !== stateCookie) {
     return res.status(403).send('Request origin cannot be verified')
   }
   if (shop && code) {
-    let savedShop = shops.filter((obj) => obj.shop === shop)[0]
-    if (!savedShop) {
-      savedShop = {shop}
-      shops.push(savedShop)
-    }
+    // let savedShop = shops.filter((obj) => obj.shop === shop)[0]
+    // if (!savedShop) {
+    //   savedShop = {shop}
+    //   shops.push(savedShop)
+    // }
     const accessTokenRequestUrl = `https://${shop}/admin/oauth/access_token`
     const accessTokenPayload = {
       client_id: apiKey,
@@ -191,19 +197,34 @@ app.get('/shopify/callback', hmacValidate, (req, res) => {
     request.post(accessTokenRequestUrl, {json: accessTokenPayload})
       .then((accessTokenResponse) => {
         const accessToken = accessTokenResponse.access_token
-        savedShop.accessToken = accessToken // TODO: Save to database
-        savedShop.webhooks = savedShop.webhooks || []
-        setWebhooks(savedShop)
+        // savedShop.accessToken = accessToken // TODO: Save to database
+        // savedShop.webhooks = savedShop.webhooks || []
+        // setWebhooks(savedShop)
+        setWebhooks({shop, accessToken})
           .then(() => {
-            res.redirect(forwardingAddress)
+            // Save to database if everything was successful
+            User.findOneAndUpdate({username: req.session.user}, {shop})
+              .then(() => {
+                return Shop.create({shop, token: accessToken})
+              })
+              .then(() => {
+                res.redirect(forwardingAddress)
+              })
+              .catch((error) => {
+                console.log('ERR:', error)
+                res.status(500).end()
+              })
           })
           .catch((error) => {
-            // console.log('CAUGHT:', error)
-            res.status(error.statusCode).send(error.error.error_description)
+            console.log('Webhooks failed:', error)
+            res.status(500).end()
+            // res.status(error.statusCode).send(error.error.error_description)
           })
       })
       .catch((error) => {
-        res.status(error.statusCode).send(error.error.error_description)
+        console.log('Access token request failed:', error)
+        res.status(500).end()
+        // res.status(error.statusCode).send(error.error.error_description)
       })
   } else {
     res.status(400).send('Required parameters missing')
@@ -271,6 +292,19 @@ app.get('/products', (req, res) => {
     })
     .catch((error) => {
       res.status(error.statusCode).send(error.error.error_description)
+    })
+})
+
+app.get('/myshop', (req, res) => {
+  console.log('3:', req.session)
+  if (!req.session || !req.session.user) return res.status(404).end()
+  User.findOne({username: req.session.user})
+    .then((user) => {
+      res.json({shop: user.shop})
+    })
+    .catch((error) => {
+      console.log('ERR:', error)
+      res.status(500).end()
     })
 })
 

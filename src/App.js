@@ -9,6 +9,7 @@ class App extends Component {
     super(props)
     this.state = {
       view: 'create',
+      shop: '',
       products: []
     }
     this.changeView = this.changeView.bind(this)
@@ -22,8 +23,20 @@ class App extends Component {
         return response.json()
       })
       .then((results) => {
-        console.log(results)
+        console.log('products:', results)
         this.setState({products: results.products})
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    window.fetch('/myshop', {credentials: 'include'})
+      .then((response) => {
+        if (response.status !== 200) return response.text().then((text) => Promise.reject(new Error(text)))
+        return response.json()
+      })
+      .then((results) => {
+        console.log('shop:', results)
+        this.setState({shop: results.shop})
       })
       .catch((error) => {
         console.log(error)
@@ -49,7 +62,7 @@ class App extends Component {
       <div>
         <Nav changeView={this.changeView} logout={this.logout} />
         {this.state.view === 'create'
-          ? <div><div>Hello World!</div><Form addProduct={this.addProduct} /></div>
+          ? <div><div>Hello World!</div><Form shop={this.state.shop} addProduct={this.addProduct} /></div>
           : this.state.products.map((product) => <Product product={product} />)
         }
       </div>
