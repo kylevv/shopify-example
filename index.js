@@ -300,7 +300,8 @@ app.get('/myshop', (req, res) => {
   if (!req.session || !req.session.user) return res.status(404).end()
   User.findOne({username: req.session.user})
     .then((user) => {
-      res.json({shop: user.shop})
+      if (user && user.shop) res.json({shop: user.shop})
+      else res.json({})
     })
     .catch((error) => {
       console.log('ERR:', error)

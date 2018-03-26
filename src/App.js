@@ -36,7 +36,7 @@ class App extends Component {
       })
       .then((results) => {
         console.log('shop:', results)
-        this.setState({shop: results.shop})
+        if (results && results.shop) this.setState({shop: results.shop})
       })
       .catch((error) => {
         console.log(error)
