@@ -9,7 +9,8 @@ class App extends Component {
     super(props)
     this.state = {
       view: 'create',
-      shop: '',
+      myshop: '',
+      myproducts: [],
       products: []
     }
     this.changeView = this.changeView.bind(this)
@@ -35,8 +36,13 @@ class App extends Component {
         return response.json()
       })
       .then((results) => {
-        console.log('shop:', results)
-        if (results && results.shop) this.setState({shop: results.shop})
+        console.log(results)
+        if (results) {
+          this.setState({
+            myshop: results.shop || '',
+            myproducts: results.products || []
+          })
+        }
       })
       .catch((error) => {
         console.log(error)
@@ -62,7 +68,7 @@ class App extends Component {
       <div>
         <Nav changeView={this.changeView} logout={this.logout} />
         {this.state.view === 'create'
-          ? <div><div>Hello World!</div><Form shop={this.state.shop} addProduct={this.addProduct} /></div>
+          ? <div><div>Hello World!</div><Form shop={this.state.myshop} products={this.state.myproducts} addProduct={this.addProduct} /></div>
           : this.state.products.map((product) => <Product product={product} />)
         }
       </div>

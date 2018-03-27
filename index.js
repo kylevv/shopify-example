@@ -160,7 +160,6 @@ app.get('/auth', (req, res) => {
 // })
 
 app.get('/shopify', (req, res) => {
-  console.log('1:', req.session)
   if (!req.session || !req.session.user) return res.status(400).end()
   const shop = req.query.shop
   if (shop) {
@@ -175,7 +174,6 @@ app.get('/shopify', (req, res) => {
 })
 
 app.get('/shopify/callback', hmacValidate, (req, res) => {
-  console.log('2:', req.session)
   if (!req.session || !req.session.user) return res.status(400).end()
   const {shop, code, state} = req.query
   const stateCookie = cookie.parse(req.headers.cookie).state
@@ -296,12 +294,32 @@ app.get('/products', (req, res) => {
 })
 
 app.get('/myshop', (req, res) => {
-  console.log('3:', req.session)
   if (!req.session || !req.session.user) return res.status(404).end()
   User.findOne({username: req.session.user})
     .then((user) => {
-      if (user && user.shop) res.json({shop: user.shop})
-      else res.json({})
+      if (!user || !user.shop) {
+        res.json({})
+      } else {
+        Shop.findOne({shop: user.shop})
+          .then((result) => {
+            if (!result || !result.shop || !result.token) {
+              res.json({shop: user.shop})
+            } else {
+              let {shop, token} = result
+              const shopRequestUrl = `https://${shop}/admin/products.json`
+              const shopRequestHeaders = {'X-Shopify-Access-Token': token}
+              request.get(shopRequestUrl, {headers: shopRequestHeaders})
+                .then((shopResponse) => {
+                  shopResponse = JSON.parse(shopResponse)
+                  res.json({shop, products: shopResponse.products})
+                })
+                .catch((error) => {
+                  console.log('ERR:', error)
+                  res.status(500).end()
+                })
+            }
+          })
+      }
     })
     .catch((error) => {
       console.log('ERR:', error)

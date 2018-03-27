@@ -28,7 +28,9 @@ class Product extends Component {
         {this.props.shop
           ? <div>
             <select>
-              <option value={'orange'}>Orange</option>
+              {this.props.products.map((product) => {
+                return <option value={product.id}>{product.title}</option>
+              })}
             </select>
             <button onClick={this.buildProduct}>Submit</button>
           </div>
